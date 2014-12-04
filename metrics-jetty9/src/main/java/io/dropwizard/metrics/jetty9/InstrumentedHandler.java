@@ -82,7 +82,7 @@ public class InstrumentedHandler extends HandlerWrapper {
     }
 
 	/**
-	 * Create a new instrumented handler using a given metrics registry.
+	 * Create a new instrumenteªd handler using a given metrics registry.
 	 *
 	 * @param registry   the registry for the metrics
 	 * @param prefix     the prefix to use for the metrics names
@@ -230,6 +230,7 @@ public class InstrumentedHandler extends HandlerWrapper {
             // new request
             activeRequests.inc();
             start = request.getTimeStamp();
+            state.addListener(listener);
         } else {
             // resumed request
             start = System.currentTimeMillis();
@@ -249,9 +250,6 @@ public class InstrumentedHandler extends HandlerWrapper {
             dispatches.update(dispatched, TimeUnit.MILLISECONDS);
 
             if (state.isSuspended()) {
-                if (state.isInitial()) {
-                    state.addListener(listener);
-                }
                 activeSuspended.inc();
             } else if (state.isInitial()) {
                 updateResponses(httpRequest, httpResponse, start);
